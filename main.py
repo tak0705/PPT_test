@@ -1,8 +1,36 @@
 from pptx import Presentation
-from pptx.util import Inches, Pt
+from pptx.util import Pt, Inches
 from pptx.dml.color import RGBColor
 
-# プレゼンテーションの作成
+# フォント変更のモジュール
+def set_title_font(title_shape, size=28, bold=True, color=RGBColor(0, 51, 102), font_name='メイリオ'):
+    """
+    タイトルのフォントを設定する関数
+    title_shape: タイトルのshapeオブジェクト
+    size: フォントサイズ
+    bold: 太字設定
+    color: フォントカラー
+    font_name: フォント名
+    """
+    title_format = title_shape.text_frame.paragraphs[0].font
+    title_format.size = Pt(size)
+    title_format.bold = bold
+    title_format.color.rgb = color
+    title_format.name = font_name  # フォント名をメイリオに設定
+
+# 背景色の変更のモジュール
+def set_slide_background(slide, color=RGBColor(255, 255, 255)):
+    """
+    スライドの背景色を変更する関数
+    slide: スライドオブジェクト
+    color: 背景色
+    """
+    background = slide.background
+    fill = background.fill
+    fill.solid()
+    fill.fore_color.rgb = color
+
+# プレゼンテーション作成
 prs = Presentation()
 
 # --- スライド1: タイトル ---
@@ -11,48 +39,30 @@ slide = prs.slides.add_slide(slide_layout)
 title = slide.shapes.title
 subtitle = slide.placeholders[1]
 
-# タイトルのフォント設定
 title.text = "XX技術の進化とその応用"
-title_format = title.text_frame.paragraphs[0].font
-title_format.size = Pt(40)
-title_format.bold = True
-title_format.color.rgb = RGBColor(0, 51, 102)  # 青色
-
-# サブタイトルのフォント設定
 subtitle.text = "山田 太郎\n2025年3月20日"
-subtitle_format = subtitle.text_frame.paragraphs[0].font
-subtitle_format.size = Pt(18)
-subtitle_format.color.rgb = RGBColor(102, 102, 102)  # グレー
 
-# 背景色を変更
-background = slide.background
-fill = background.fill
-fill.solid()
-fill.fore_color.rgb = RGBColor(240, 240, 240)  # 背景を淡いグレーに
+# タイトルフォント設定
+set_title_font(title, size=40, bold=True, color=RGBColor(0, 51, 102), font_name='メイリオ')
+set_title_font(subtitle, size=18, bold=False, color=RGBColor(102, 102, 102), font_name='メイリオ')
 
-# --- スライド2: 研究の目的（背景） ---
+# 背景色設定
+set_slide_background(slide, color=RGBColor(240, 240, 240))  # 背景を淡いグレーに
+
+# --- スライド2: 研究の目的 ---
 slide_layout = prs.slide_layouts[1]
 slide = prs.slides.add_slide(slide_layout)
 title = slide.shapes.title
-title.text = "研究の目的"
 content = slide.shapes.placeholders[1]
-content.text = ("・XX技術の現状と課題\n"
-                "・技術の進化に向けたニーズ\n"
-                "・本研究の目的は、XX技術の応用を拡大すること")
+title.text = "研究の目的"
+content.text = ("XX技術の現状と課題\n"
+                "技術の進化に向けたニーズ\n"
+                "本研究の目的は、XX技術の応用を拡大すること")
 
-# タイトルフォント変更
-title_format = title.text_frame.paragraphs[0].font
-title_format.size = Pt(28)
-title_format.bold = True
-title_format.color.rgb = RGBColor(0, 51, 102)
+set_title_font(title, size=28, bold=True, color=RGBColor(0, 51, 102), font_name='メイリオ')
+set_slide_background(slide, color=RGBColor(255, 255, 255))  # 白色背景
 
-# 背景色の変更
-background = slide.background
-fill = background.fill
-fill.solid()
-fill.fore_color.rgb = RGBColor(255, 255, 255)  # 白色背景
-
-# --- スライド3: 画像の追加 ---
+# --- スライド3: 研究の動機・課題設定 ---
 slide_layout = prs.slide_layouts[1]
 slide = prs.slides.add_slide(slide_layout)
 title = slide.shapes.title
@@ -60,34 +70,102 @@ title.text = "研究の動機・課題設定"
 
 # 画像をスライドに追加
 img_path = "path_to_image.png"  # 画像ファイルのパスを指定
-# サイズ調整：width=4インチ、高さ=3インチ
 slide.shapes.add_picture(img_path, Inches(1), Inches(1.5), width=Inches(6), height=Inches(3.5))
 
-# --- スライド4: グラフや図の挿入（任意） ---
+set_title_font(title, size=28, bold=True, color=RGBColor(0, 51, 102), font_name='メイリオ')
+set_slide_background(slide, color=RGBColor(255, 255, 255))  # 白色背景
+
+# --- スライド4: 研究方法 ---
 slide_layout = prs.slide_layouts[1]
 slide = prs.slides.add_slide(slide_layout)
 title = slide.shapes.title
-title.text = "研究結果"
-
-# グラフや図を追加したい場合は、`matplotlib`などを使ってグラフを描画し、画像として保存して挿入できます
-
-# --- スライド5: 結論 ---
-slide_layout = prs.slide_layouts[1]
-slide = prs.slides.add_slide(slide_layout)
-title = slide.shapes.title
-title.text = "結論"
 content = slide.shapes.placeholders[1]
-content.text = ("・本研究の要点\n"
-                "・XX技術の重要性\n"
-                "・研究の意義と社会への貢献")
+title.text = "研究方法"
+content.text = ("実験装置の構成\n"
+                "実施した実験の手順\n"
+                "データ収集方法")
 
-# タイトルフォント変更
-title_format = title.text_frame.paragraphs[0].font
-title_format.size = Pt(28)
-title_format.bold = True
-title_format.color.rgb = RGBColor(0, 51, 102)
+set_title_font(title, size=28, bold=True, color=RGBColor(0, 51, 102), font_name='メイリオ')
+set_slide_background(slide, color=RGBColor(255, 255, 255))  # 白色背景
 
-# プレゼンテーションの保存
-prs.save('styled_research_presentation.pptx')
+# --- スライド5: 研究結果 ---
+slide_layout = prs.slide_layouts[1]
+slide = prs.slides.add_slide(slide_layout)
+title = slide.shapes.title
+content = slide.shapes.placeholders[1]
+title.text = "研究結果"
+content.text = ("実験の結果、XX技術の性能向上が確認されました。\n"
+                "特に、YYの面で顕著な改善が見られました。")
 
-print("シンプルで見やすいデザインのPowerPointファイル 'styled_research_presentation.pptx' が作成されました。")
+set_title_font(title, size=28, bold=True, color=RGBColor(0, 51, 102), font_name='メイリオ')
+set_slide_background(slide, color=RGBColor(255, 255, 255))  # 白色背景
+
+# --- スライド6: グラフや図の挿入 ---
+slide_layout = prs.slide_layouts[1]
+slide = prs.slides.add_slide(slide_layout)
+title = slide.shapes.title
+title.text = "研究結果 - グラフ"
+
+# グラフをスライドに追加（画像として）
+img_path = "path_to_image.png"  # グラフ画像のパスを指定
+slide.shapes.add_picture(img_path, Inches(1), Inches(1.5), width=Inches(6), height=Inches(3.5))
+
+set_title_font(title, size=28, bold=True, color=RGBColor(0, 51, 102), font_name='メイリオ')
+set_slide_background(slide, color=RGBColor(255, 255, 255))  # 白色背景
+
+# --- スライド7: 結論 ---
+slide_layout = prs.slide_layouts[1]
+slide = prs.slides.add_slide(slide_layout)
+title = slide.shapes.title
+content = slide.shapes.placeholders[1]
+title.text = "結論"
+content.text = ("本研究の要点\n"
+                "XX技術の重要性\n"
+                "研究の意義と社会への貢献")
+
+set_title_font(title, size=28, bold=True, color=RGBColor(0, 51, 102), font_name='メイリオ')
+set_slide_background(slide, color=RGBColor(255, 255, 255))  # 白色背景
+
+# --- スライド8: 今後の課題 ---
+slide_layout = prs.slide_layouts[1]
+slide = prs.slides.add_slide(slide_layout)
+title = slide.shapes.title
+content = slide.shapes.placeholders[1]
+title.text = "今後の課題"
+content.text = ("今後、XX技術の実用化に向けた課題として\n"
+                "実験結果の精度向上\n"
+                "実験条件の最適化\n"
+                "が挙げられる。")
+
+set_title_font(title, size=28, bold=True, color=RGBColor(0, 51, 102), font_name='メイリオ')
+set_slide_background(slide, color=RGBColor(255, 255, 255))  # 白色背景
+
+# --- スライド9: まとめ ---
+slide_layout = prs.slide_layouts[1]
+slide = prs.slides.add_slide(slide_layout)
+title = slide.shapes.title
+content = slide.shapes.placeholders[1]
+title.text = "まとめ"
+content.text = ("XX技術は今後の技術革新に大きく貢献する可能性を秘めており、\n"
+                "本研究の成果がその発展に寄与することを期待している。")
+
+set_title_font(title, size=28, bold=True, color=RGBColor(0, 51, 102), font_name='メイリオ')
+set_slide_background(slide, color=RGBColor(255, 255, 255))  # 白色背景
+
+# --- スライド10: 参考文献 ---
+slide_layout = prs.slide_layouts[1]
+slide = prs.slides.add_slide(slide_layout)
+title = slide.shapes.title
+content = slide.shapes.placeholders[1]
+title.text = "参考文献"
+content.text = ("研究論文A, 2023年\n"
+                "研究論文B, 2024年\n"
+                "研究論文C, 2025年")
+
+set_title_font(title, size=28, bold=True, color=RGBColor(0, 51, 102), font_name='メイリオ')
+set_slide_background(slide, color=RGBColor(255, 255, 255))  # 白色背景
+
+# プレゼンテーション保存
+prs.save('presentation.pptx')
+
+print("PowerPointファイル 'presentation.pptx' が作成されました。")
